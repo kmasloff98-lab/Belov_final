@@ -815,24 +815,86 @@
 <!-- end wp_footer -->÷
 <script>
 document.addEventListener("DOMContentLoaded", function() {
-    // Находим все кнопочки страниц и стрелки внизу карусели
-    const pageButtons = document.querySelectorAll(".aux-pagination-container a, .aux-pagination a, .page-numbers");
+    // Автоматически находим контейнер галереи (не привязываясь к жесткому ID #aux-gallery-1)
+    const galleryContainer = document.querySelector(".aux-gallery-container, #aux-gallery-1");
+    if (!galleryContainer) return;
+
+    // Находим все карточки с фотографиями внутри галереи
+    const items = galleryContainer.querySelectorAll(".aux-iso-item");
     
-    pageButtons.forEach(function(btn) {
-        btn.addEventListener("click", function(e) {
-            // Запрещаем перезагрузку всей страницы сайта и вылет наверх
-            e.preventDefault();
+    // Находим все кнопки страниц и стрелочки, используя селекторы с новой страницы
+    const links = document.querySelectorAll(".aux-pagination-container a, .aux-pagination a, .page-numbers");
+    const itemsPerPage = 6;
+
+    if (!items.length || !links.length) return;
+
+    function showPage(pageNumber) {
+        items.forEach((item, index) => {
+            const start = (pageNumber - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
             
-            // Находим саму плитку с фотографиями
-            const grid = document.querySelector(".aux-gallery-container.aux-isotope-ready");
-            if (grid && window.jQuery) {
-                const $grid = window.jQuery(grid);
-                // Запрашиваем у плагина Isotope принудительное обновление сетки картинок на месте
-                $grid.isotope({ filter: '*' });
-                $grid.isotope('layout');
+            if (index >= start && index < end) {
+                // Плавно проявляем картинки новой страницы
+                item.style.setProperty("display", "block", "important");
+                item.style.setProperty("position", "relative", "important");
+                item.style.setProperty("left", "auto", "important");
+                item.style.setProperty("top", "auto", "important");
+                item.classList.remove("aux-iso-hidden");
+                
+                setTimeout(() => {
+                    item.style.transition = "opacity 0.4s ease-in-out, transform 0.4s ease-in-out";
+                    item.style.opacity = "1";
+                    item.style.transform = "scale(1)";
+                }, 10);
+            } else {
+                // Плавно скрываем остальные
+                item.style.transition = "opacity 0.3s ease-in-out, transform 0.3s ease-in-out";
+                item.style.opacity = "0";
+                item.style.transform = "scale(0.9)";
+                setTimeout(() => {
+                    item.style.setProperty("display", "none", "important");
+                    item.classList.add("aux-iso-hidden");
+                }, 300);
             }
+        });
+
+        // Если на странице используется плагин Isotope, просим его пересчитать сетку после скрытия/показа элементов
+        if (window.jQuery && galleryContainer.classList.contains('aux-isotope-ready')) {
+            const $grid = window.jQuery(galleryContainer);
+            $grid.isotope({ filter: ':not(.aux-iso-hidden)' });
+            setTimeout(() => $grid.isotope('layout'), 310);
+        }
+    }
+
+    // Показываем первую страницу при загрузке
+    showPage(1);
+
+    // Вешаем обработчик кликов на кнопки пагинации
+    links.forEach(link => {
+        link.addEventListener("click", function(e) {
+            // Игнорируем технические стрелки "назад/вперед", если у них нет номера страницы
+            if (this.getAttribute("data-prev") || this.getAttribute("data-next")) return;
+            e.preventDefault();
+
+            // Снимаем класс активности со всех соседних элементов и вешаем на текущий
+            links.forEach(l => {
+                l.parentElement.classList.remove("active");
+                l.classList.remove("current"); // на некоторых страницах активный класс вешается прямо на ссылку
+            });
             
-            console.log("Блок картинок успешно переключен!");
+            this.parentElement.classList.add("active");
+            this.classList.add("current");
+
+            // Проверяем номер страницы из дата-атрибута или из текста самой кнопки
+            let page = parseInt(this.getAttribute("data-page"));
+            if (!page) {
+                page = parseInt(this.textContent.trim());
+            }
+
+            if (page) {
+                showPage(page);
+                console.log("Переключено на страницу: " + page);
+            }
         });
     });
 });
