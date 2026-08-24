@@ -812,72 +812,64 @@
 
 
 <span id="elementor-device-mode" class="elementor-screen-only"></span>
-<!-- end wp_footer -->÷
 <!-- end wp_footer -->
 <script>
 document.addEventListener("DOMContentLoaded", function() {
-    // Находим все фотографии галереи на этой странице
-    const items = document.querySelectorAll(".aux-gallery-container .aux-iso-item, #aux-gallery-1 .aux-iso-item");
-    // Находим кнопки страниц (цифры)
+    const galleryContainer = document.querySelector(".aux-gallery-container, #aux-gallery-1");
+    if (!galleryContainer) return;
+
+    const items = galleryContainer.querySelectorAll(".aux-iso-item");
     const links = document.querySelectorAll(".aux-pagination-container a, .aux-pagination a, .page-numbers");
     const itemsPerPage = 6;
 
     if (!items.length || !links.length) return;
 
+    // 1. При первой загрузке один раз размечаем все картинки классами страниц (page-1, page-2 и т.д.)
+    items.forEach((item, index) => {
+        const pageNum = Math.floor(index / itemsPerPage) + 1;
+        item.classList.add("page-" + pageNum);
+    });
+
     function showPage(pageNumber) {
-        items.forEach((item, index) => {
-            const start = (pageNumber - 1) * itemsPerPage;
-            const end = start + itemsPerPage;
-            
-            if (index >= start && index < end) {
-                // Показываем картинки текущей страницы
-                item.style.setProperty("display", "block", "important");
-                item.style.setProperty("opacity", "1", "important");
-                item.style.setProperty("visibility", "visible", "important");
-                item.classList.remove("aux-iso-hidden");
-            } else {
-                // Скрываем все остальные страницы
-                item.style.setProperty("display", "none", "important");
-                item.style.setProperty("opacity", "0", "important");
-                item.style.setProperty("visibility", "hidden", "important");
-                item.classList.add("aux-iso-hidden");
+        // 2. Отдаем команду Isotope отфильтровать элементы по классу текущей страницы
+        if (window.jQuery && galleryContainer.classList.contains('aux-isotope-ready')) {
+            const $grid = window.jQuery(galleryContainer);
+            $grid.isotope({ filter: '.page-' + pageNumber });
+            $grid.isotope('layout');
+        } else {
+            // Запасной вариант на случай, если Isotope еще не готов
+            items.forEach((item) => {
+                if (item.classList.contains("page-" + pageNumber)) {
+                    item.style.setProperty("display", "block", "important");
+                } else {
+                    item.style.setProperty("display", "none", "important");
+                }
+            });
+        }
+
+        // 3. Подсвечиваем активную кнопку
+        links.forEach(l => {
+            if (l.parentElement) l.parentElement.classList.remove("active");
+            l.classList.remove("current");
+            if (parseInt(l.textContent.trim()) === pageNumber) {
+                l.classList.add("current");
+                if (l.parentElement) l.parentElement.classList.add("active");
             }
         });
-
-        // Просим Isotope мгновенно перестроить сетку под новые 6 фото, как на главной
-        const galleryContainer = document.querySelector(".aux-gallery-container, #aux-gallery-1");
-        if (galleryContainer && window.jQuery && galleryContainer.classList.contains('aux-isotope-ready')) {
-            const $grid = window.jQuery(galleryContainer);
-            $grid.isotope({ filter: ':not(.aux-iso-hidden)' });
-            $grid.isotope('layout');
-        }
     }
 
-    // Показываем первую страницу при старте
+    // Показываем первую страницу
     showPage(1);
 
-    // Вешаем логику кликов на кнопки, которой не хватало
+    // Вешаем обработчик кликов на цифры
     links.forEach(link => {
         link.addEventListener("click", function(e) {
-            // Перехватываем клик, чтобы страница не улетала вверх
             e.preventDefault();
-
-            // Переключаем активный класс на кнопках пагинации
-            links.forEach(l => {
-                if (l.parentElement) l.parentElement.classList.remove("active");
-                l.classList.remove("current");
-            });
-            this.classList.add("current");
-            if (this.parentElement) this.parentElement.classList.add("active");
-
-            // Получаем номер страницы из текста кнопки (1, 2, 3...)
             const page = parseInt(this.textContent.trim());
             if (page) {
                 showPage(page);
-                console.log("Страница переключена на: " + page);
             }
         });
     });
 });
 </script>
-
