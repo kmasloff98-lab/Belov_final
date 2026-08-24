@@ -815,85 +815,86 @@
 <!-- end wp_footer -->÷
 <script>
 document.addEventListener("DOMContentLoaded", function() {
-    // Автоматически находим контейнер галереи (не привязываясь к жесткому ID #aux-gallery-1)
     const galleryContainer = document.querySelector(".aux-gallery-container, #aux-gallery-1");
     if (!galleryContainer) return;
 
-    // Находим все карточки с фотографиями внутри галереи
     const items = galleryContainer.querySelectorAll(".aux-iso-item");
-    
-    // Находим все кнопки страниц и стрелочки, используя селекторы с новой страницы
+    // Ищем ссылки страниц, включая любые стрелочки внутри контейнера пагинации
     const links = document.querySelectorAll(".aux-pagination-container a, .aux-pagination a, .page-numbers");
     const itemsPerPage = 6;
+    let currentPage = 1;
 
     if (!items.length || !links.length) return;
 
     function showPage(pageNumber) {
+        const start = (pageNumber - 1) * itemsPerPage;
+        const end = start + itemsPerPage;
+
+        // 1. Помечаем элементы текущей страницы специальным классом
         items.forEach((item, index) => {
-            const start = (pageNumber - 1) * itemsPerPage;
-            const end = start + itemsPerPage;
-            
             if (index >= start && index < end) {
-                // Плавно проявляем картинки новой страницы
-                item.style.setProperty("display", "block", "important");
-                item.style.setProperty("position", "relative", "important");
-                item.style.setProperty("left", "auto", "important");
-                item.style.setProperty("top", "auto", "important");
-                item.classList.remove("aux-iso-hidden");
-                
-                setTimeout(() => {
-                    item.style.transition = "opacity 0.4s ease-in-out, transform 0.4s ease-in-out";
-                    item.style.opacity = "1";
-                    item.style.transform = "scale(1)";
-                }, 10);
+                item.classList.add("current-page-item");
             } else {
-                // Плавно скрываем остальные
-                item.style.transition = "opacity 0.3s ease-in-out, transform 0.3s ease-in-out";
-                item.style.opacity = "0";
-                item.style.transform = "scale(0.9)";
-                setTimeout(() => {
-                    item.style.setProperty("display", "none", "important");
-                    item.classList.add("aux-iso-hidden");
-                }, 300);
+                item.classList.remove("current-page-item");
             }
         });
 
-        // Если на странице используется плагин Isotope, просим его пересчитать сетку после скрытия/показа элементов
+        // 2. Отдаем управление Isotope, чтобы он отфильтровал и красиво расставил блоки
         if (window.jQuery && galleryContainer.classList.contains('aux-isotope-ready')) {
             const $grid = window.jQuery(galleryContainer);
-            $grid.isotope({ filter: ':not(.aux-iso-hidden)' });
-            setTimeout(() => $grid.isotope('layout'), 310);
+            $grid.isotope({ filter: '.current-page-item' });
+            setTimeout(() => $grid.isotope('layout'), 100);
+        } else {
+            // Запасной вариант на случай, если Isotope не инициализировался
+            items.forEach((item) => {
+                if (item.classList.contains("current-page-item")) {
+                    item.style.setProperty("display", "block", "important");
+                } else {
+                    item.style.setProperty("display", "none", "important");
+                }
+            });
         }
+
+        // 3. Обновляем визуальное выделение активной кнопки
+        links.forEach(l => {
+            l.parentElement.classList.remove("active");
+            l.classList.remove("current");
+            
+            // Если текст ссылки совпадает с номером страницы, подсвечиваем её
+            if (parseInt(l.textContent.trim()) === pageNumber) {
+                l.parentElement.classList.add("active");
+                l.classList.add("current");
+            }
+        });
     }
 
-    // Показываем первую страницу при загрузке
-    showPage(1);
+    // Инициализация первой страницы
+    showPage(currentPage);
 
-    // Вешаем обработчик кликов на кнопки пагинации
+    // Вешаем обработчик кликов
     links.forEach(link => {
         link.addEventListener("click", function(e) {
-            // Игнорируем технические стрелки "назад/вперед", если у них нет номера страницы
-            if (this.getAttribute("data-prev") || this.getAttribute("data-next")) return;
-            e.preventDefault();
+            e.preventDefault(); // Теперь перехватываем абсолютно все клики, включая стрелочки
 
-            // Снимаем класс активности со всех соседних элементов и вешаем на текущий
-            links.forEach(l => {
-                l.parentElement.classList.remove("active");
-                l.classList.remove("current"); // на некоторых страницах активный класс вешается прямо на ссылку
-            });
-            
-            this.parentElement.classList.add("active");
-            this.classList.add("current");
+            let targetPage = null;
 
-            // Проверяем номер страницы из дата-атрибута или из текста самой кнопки
-            let page = parseInt(this.getAttribute("data-page"));
-            if (!page) {
-                page = parseInt(this.textContent.trim());
+            // Проверяем, куда кликнули: на стрелку или на цифру
+            if (this.getAttribute("data-prev") || this.classList.contains("prev") || this.innerText.includes("<")) {
+                // Кликнули «Назад»
+                targetPage = Math.max(1, currentPage - 1);
+            } else if (this.getAttribute("data-next") || this.classList.contains("next") || this.innerText.includes(">")) {
+                // Кликнули «Вперед»
+                const maxPage = Math.ceil(items.length / itemsPerPage);
+                targetPage = Math.min(maxPage, currentPage + 1);
+            } else {
+                // Кликнули на обычную цифру
+                targetPage = parseInt(this.getAttribute("data-page")) || parseInt(this.textContent.trim());
             }
 
-            if (page) {
-                showPage(page);
-                console.log("Переключено на страницу: " + page);
+            if (targetPage && targetPage !== currentPage) {
+                currentPage = targetPage;
+                showPage(currentPage);
+                console.log("Успешно переключено на страницу: " + currentPage);
             }
         });
     });
