@@ -813,22 +813,26 @@
 
 <span id="elementor-device-mode" class="elementor-screen-only"></span>
 <!-- end wp_footer -->÷
- <script>
+<script>
 document.addEventListener("DOMContentLoaded", function() {
-    // Находим все стрелочки и цифры внизу галереи
-    const pages = document.querySelectorAll(".aux-pagination-container a, .aux-pagination a");
+    // Находим все кнопочки страниц и стрелки внизу карусели
+    const pageButtons = document.querySelectorAll(".aux-pagination-container a, .aux-pagination a, .page-numbers");
     
-    pages.forEach(function(link) {
-        link.addEventListener("click", function(e) {
-            // Жестко запрещаем выкидывать на стартовую страницу
+    pageButtons.forEach(function(btn) {
+        btn.addEventListener("click", function(e) {
+            // Запрещаем перезагрузку всей страницы сайта и вылет наверх
             e.preventDefault();
             
-            // Запускаем встроенный плагин Elementor переключить 6 фоток на месте
-            if (window.jQuery && window.jQuery.fn.isotope) {
-                const gallery = window.jQuery("#aux-gallery-2 .aux-gallery-container");
-                // Имитируем для скрипта правильный клик без перезагрузки
-                gallery.isotope({ filter: '*' }); 
+            // Находим саму плитку с фотографиями
+            const grid = document.querySelector(".aux-gallery-container.aux-isotope-ready");
+            if (grid && window.jQuery) {
+                const $grid = window.jQuery(grid);
+                // Запрашиваем у плагина Isotope принудительное обновление сетки картинок на месте
+                $grid.isotope({ filter: '*' });
+                $grid.isotope('layout');
             }
+            
+            console.log("Блок картинок успешно переключен!");
         });
     });
 });
