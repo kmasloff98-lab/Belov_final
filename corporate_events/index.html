@@ -813,90 +813,71 @@
 
 <span id="elementor-device-mode" class="elementor-screen-only"></span>
 <!-- end wp_footer -->÷
+<!-- end wp_footer -->
 <script>
 document.addEventListener("DOMContentLoaded", function() {
-    const galleryContainer = document.querySelector(".aux-gallery-container, #aux-gallery-1");
-    if (!galleryContainer) return;
-
-    const items = galleryContainer.querySelectorAll(".aux-iso-item");
-    // Ищем ссылки страниц, включая любые стрелочки внутри контейнера пагинации
+    // Находим все фотографии галереи на этой странице
+    const items = document.querySelectorAll(".aux-gallery-container .aux-iso-item, #aux-gallery-1 .aux-iso-item");
+    // Находим кнопки страниц (цифры)
     const links = document.querySelectorAll(".aux-pagination-container a, .aux-pagination a, .page-numbers");
     const itemsPerPage = 6;
-    let currentPage = 1;
 
     if (!items.length || !links.length) return;
 
     function showPage(pageNumber) {
-        const start = (pageNumber - 1) * itemsPerPage;
-        const end = start + itemsPerPage;
-
-        // 1. Помечаем элементы текущей страницы специальным классом
         items.forEach((item, index) => {
-            if (index >= start && index < end) {
-                item.classList.add("current-page-item");
-            } else {
-                item.classList.remove("current-page-item");
-            }
-        });
-
-        // 2. Отдаем управление Isotope, чтобы он отфильтровал и красиво расставил блоки
-        if (window.jQuery && galleryContainer.classList.contains('aux-isotope-ready')) {
-            const $grid = window.jQuery(galleryContainer);
-            $grid.isotope({ filter: '.current-page-item' });
-            setTimeout(() => $grid.isotope('layout'), 100);
-        } else {
-            // Запасной вариант на случай, если Isotope не инициализировался
-            items.forEach((item) => {
-                if (item.classList.contains("current-page-item")) {
-                    item.style.setProperty("display", "block", "important");
-                } else {
-                    item.style.setProperty("display", "none", "important");
-                }
-            });
-        }
-
-        // 3. Обновляем визуальное выделение активной кнопки
-        links.forEach(l => {
-            l.parentElement.classList.remove("active");
-            l.classList.remove("current");
+            const start = (pageNumber - 1) * itemsPerPage;
+            const end = start + itemsPerPage;
             
-            // Если текст ссылки совпадает с номером страницы, подсвечиваем её
-            if (parseInt(l.textContent.trim()) === pageNumber) {
-                l.parentElement.classList.add("active");
-                l.classList.add("current");
+            if (index >= start && index < end) {
+                // Показываем картинки текущей страницы
+                item.style.setProperty("display", "block", "important");
+                item.style.setProperty("opacity", "1", "important");
+                item.style.setProperty("visibility", "visible", "important");
+                item.classList.remove("aux-iso-hidden");
+            } else {
+                // Скрываем все остальные страницы
+                item.style.setProperty("display", "none", "important");
+                item.style.setProperty("opacity", "0", "important");
+                item.style.setProperty("visibility", "hidden", "important");
+                item.classList.add("aux-iso-hidden");
             }
         });
+
+        // Просим Isotope мгновенно перестроить сетку под новые 6 фото, как на главной
+        const galleryContainer = document.querySelector(".aux-gallery-container, #aux-gallery-1");
+        if (galleryContainer && window.jQuery && galleryContainer.classList.contains('aux-isotope-ready')) {
+            const $grid = window.jQuery(galleryContainer);
+            $grid.isotope({ filter: ':not(.aux-iso-hidden)' });
+            $grid.isotope('layout');
+        }
     }
 
-    // Инициализация первой страницы
-    showPage(currentPage);
+    // Показываем первую страницу при старте
+    showPage(1);
 
-    // Вешаем обработчик кликов
+    // Вешаем логику кликов на кнопки, которой не хватало
     links.forEach(link => {
         link.addEventListener("click", function(e) {
-            e.preventDefault(); // Теперь перехватываем абсолютно все клики, включая стрелочки
+            // Перехватываем клик, чтобы страница не улетала вверх
+            e.preventDefault();
 
-            let targetPage = null;
+            // Переключаем активный класс на кнопках пагинации
+            links.forEach(l => {
+                if (l.parentElement) l.parentElement.classList.remove("active");
+                l.classList.remove("current");
+            });
+            this.classList.add("current");
+            if (this.parentElement) this.parentElement.classList.add("active");
 
-            // Проверяем, куда кликнули: на стрелку или на цифру
-            if (this.getAttribute("data-prev") || this.classList.contains("prev") || this.innerText.includes("<")) {
-                // Кликнули «Назад»
-                targetPage = Math.max(1, currentPage - 1);
-            } else if (this.getAttribute("data-next") || this.classList.contains("next") || this.innerText.includes(">")) {
-                // Кликнули «Вперед»
-                const maxPage = Math.ceil(items.length / itemsPerPage);
-                targetPage = Math.min(maxPage, currentPage + 1);
-            } else {
-                // Кликнули на обычную цифру
-                targetPage = parseInt(this.getAttribute("data-page")) || parseInt(this.textContent.trim());
-            }
-
-            if (targetPage && targetPage !== currentPage) {
-                currentPage = targetPage;
-                showPage(currentPage);
-                console.log("Успешно переключено на страницу: " + currentPage);
+            // Получаем номер страницы из текста кнопки (1, 2, 3...)
+            const page = parseInt(this.textContent.trim());
+            if (page) {
+                showPage(page);
+                console.log("Страница переключена на: " + page);
             }
         });
     });
 });
 </script>
+
