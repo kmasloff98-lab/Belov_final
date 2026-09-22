@@ -433,47 +433,9 @@ img:is([sizes=auto i],[sizes^="auto," i]){contain-intrinsic-size:3000px 1500px}
             </div>
                 </figure>
 </div><nav class="aux-pagination aux-round aux-page-no-border aux-iso-pagination"><ul class="pagination"><li class="prev"><a style="cursor:pointer;" data-prev="true">Previous</a></li><li class="page active "><a data-page="1" style="cursor:pointer;">1</a></li><li class="page  "><a data-page="2" style="cursor:pointer;">2</a></li><li class="page  "><a data-page="3" style="cursor:pointer;">3</a></li><li class="next"><a style="cursor:pointer;" data-next="true">Next</a></li></ul></nav></div></section><!-- widget-container -->
-
 <style>
-/* ВОЗВРАЩАЕМ РОДНЫЕ 125% ПРОПОРЦИИ КАРТИНКАМ */
+/* ВОЗВРАЩАЕМ РОДНЫЕ ПРОПОРЦИИ КАРТИНКАМ */
 .aux-parent-au7728634a .aux-frame-ratio { padding-bottom:125% !important; }
-
-/* ЖЕСТКО СХЛОПЫВАЕМ ВЫСОТУ РОДИТЕЛЬСКОГО БЛОКА */
-.aux-isotope-view, div[class*="gallery-id"] {
-    display: flex !important;
-    flex-wrap: wrap !important;
-    justify-content: flex-start !important;
-    position: relative !important;
-    width: 100% !important;
-    height: auto !important;
-    max-height: 520px !important; /* Эта строчка силой сожмет дыру и подтянет кнопки! */
-    overflow: visible !important;
-}
-/* ЗАСТАВЛЯЕМ ВСЕ КАРТИНКИ ВСТАТЬ СТРОГО В ТРИ КОЛОНКИ С ОТСТУПАМИ */
-.gallery-item {
-    position: static !important; /* Глушим прыжки скрипта наверх */
-    display: block !important;
-    width: 31.333% !important; /* Чистые 3 колонки на экране */
-    margin-right: 2% !important;
-    margin-bottom: 20px !important;
-    box-sizing: border-box !important;
-}
-
-/* УБИРАЕМ ОТСТУП У КАЖДОЙ ТРЕТЬЕЙ КАРТИНКИ В РЯДУ, ЧТОБЫ СЕТКА НЕ ДЁРГАЛАСЬ */
-.gallery-item:nth-child(3n) {
-    margin-right: 0 !important;
-}
-
-/* СТРОГО СКРЫВАЕМ НЕАКТИВНЫЕ СТРАНИЦЫ КАРАУСЕЛИ */
-.gallery-item.aux-iso-hidden {
-    display: none !important;
-}
-/* СХЛОПЫВАЕМ РАССТОЯНИЕ МЕЖДУ СЕТКОЙ И КНОПКАМИ */
-.aux-pagination {
-    margin-top: -80px !important;
-    position: relative !important;
-    z-index: 999 !important;
-}
 </style>
 		</div>
 				</div>
