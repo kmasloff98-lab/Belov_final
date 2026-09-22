@@ -438,16 +438,17 @@ img:is([sizes=auto i],[sizes^="auto," i]){contain-intrinsic-size:3000px 1500px}
 /* ВОЗВРАЩАЕМ РОДНЫЕ 125% ПРОПОРЦИИ КАРТИНКАМ */
 .aux-parent-au7728634a .aux-frame-ratio { padding-bottom:125% !important; }
 
-/* ДЕЛАЕМ РОДИТЕЛЬСКИЙ КОНТЕЙНЕР ФЛЕКСОМ И СХЛОПЫВАЕМ ДЫРУ */
+/* ЖЕСТКО СХЛОПЫВАЕМ ВЫСОТУ РОДИТЕЛЬСКОГО БЛОКА */
 .aux-isotope-view, div[class*="gallery-id"] {
     display: flex !important;
     flex-wrap: wrap !important;
-    justify-content: flex-start !important; /* Выравнивание по левому краю как в оригинале */
+    justify-content: flex-start !important;
     position: relative !important;
-    height: auto !important;
     width: 100% !important;
+    height: auto !important;
+    max-height: 520px !important; /* Эта строчка силой сожмет дыру и подтянет кнопки! */
+    overflow: visible !important;
 }
-
 /* ЗАСТАВЛЯЕМ ВСЕ КАРТИНКИ ВСТАТЬ СТРОГО В ТРИ КОЛОНКИ С ОТСТУПАМИ */
 .gallery-item {
     position: static !important; /* Глушим прыжки скрипта наверх */
