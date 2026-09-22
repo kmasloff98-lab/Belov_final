@@ -134,3 +134,6 @@ body.wb_embedded {
 #wm-ipp-base, #wm-ipp-print, .wb-autocomplete-suggestions {
     display: none !important;
 }
+.aux-iso-pagination {
+    margin-top: -120px !important;
+}
