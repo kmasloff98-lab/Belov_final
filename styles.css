@@ -134,6 +134,16 @@ body.wb_embedded {
 #wm-ipp-base, #wm-ipp-print, .wb-autocomplete-suggestions {
     display: none !important;
 }
-.aux-iso-pagination {
-    margin-top: -120px !important;
+/* ПРИНУДИТЕЛЬНО ВОЗВРАЩАЕМ КАРТИНКИ НА СВОИ МЕСТА ДЛЯ ВСЕХ СТРАНИЦ */
+.gallery-item {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    display: inline-block !important;
+    margin-bottom: 20px !important;
+}
+
+/* СКРЫВАЕМ ТОЛЬКО ТЕ КАРТИНКИ, КОТОРЫЕ ДОЛЖНЫ БЫТЬ СКРЫТЫ НА ДАННОЙ ВКЛАДКЕ */
+.gallery-item.aux-iso-hidden {
+    display: none !important;
 }
