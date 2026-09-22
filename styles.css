@@ -134,16 +134,22 @@ body.wb_embedded {
 #wm-ipp-base, #wm-ipp-print, .wb-autocomplete-suggestions {
     display: none !important;
 }
-/* ПРИНУДИТЕЛЬНО ВОЗВРАЩАЕМ КАРТИНКИ НА СВОИ МЕСТА ДЛЯ ВСЕХ СТРАНИЦ */
-.gallery-item {
+/* ПРИНУДИТЕЛЬНО ПРЕВРАЩАЕМ РОДИТЕЛЬСКИЙ БЛОК В КРАСИВЫЙ ФЛЕКС */
+.aux-isotope-view, 
+div[class*="gallery-id"] {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    justify-content: center !important;
     position: relative !important;
-    top: auto !important;
-    left: auto !important;
-    display: inline-block !important;
-    margin-bottom: 20px !important;
+    height: auto !important; /* Убиваем фиксированную высоту родителя, которая делала дыру */
 }
-
-/* СКРЫВАЕМ ТОЛЬКО ТЕ КАРТИНКИ, КОТОРЫЕ ДОЛЖНЫ БЫТЬ СКРЫТЫ НА ДАННОЙ ВКЛАДКЕ */
+/* ЗАСТАВЛЯЕМ ВСЕ КАРТИНКИ ВСТАТЬ В ОДИН РЯД */
+.gallery-item {
+    position: static !important; /* Намертво сбрасываем top и left в пикселях */
+    display: block !important;
+    margin: 10px !important;
+}
+/* СКРЫВАЕМ НЕАКТИВНЫЕ СТРАНИЦЫ КАРАУСЕЛИ */
 .gallery-item.aux-iso-hidden {
     display: none !important;
 }
