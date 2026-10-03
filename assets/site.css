@@ -100,9 +100,6 @@
   .aux-gallery .aux-gallery-container.aux-mb-col1 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .aux-gallery .aux-gallery-container.aux-mb-col3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
-@media (max-width: 420px) {
-  .aux-gallery .aux-gallery-container.aux-mb-col1 { grid-template-columns: 1fr; }
-}
 
 /* =================================================================
  * 3. ПЕРЕКЛЮЧАТЕЛЬ СТРАНИЦ ГАЛЕРЕИ
@@ -572,3 +569,114 @@ html, body { max-width: 100%; overflow-x: hidden; }
 
   .aux-goto-top-btn { right: 14px !important; bottom: 14px !important; }
 }
+
+/* =================================================================
+ * 9. ЕДИНЫЙ ПОДВАЛ САЙТА — соцсети в стиле блока «Контакты»
+ * ================================================================= */
+.sb-footer {
+  background: #f1f1f5;
+  border-top: 1px solid rgba(0, 0, 0, .06);
+  padding: 56px 16px 28px;
+  font-family: "Roboto", Arial, sans-serif;
+  clear: both;
+}
+.sb-footer__inner {
+  max-width: 1140px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+.sb-social {
+  list-style: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px;
+}
+.sb-social li { margin: 0 !important; padding: 0 !important; list-style: none !important; }
+.sb-social__item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 210px;
+  padding: 10px 22px 10px 10px;
+  box-sizing: border-box;
+  border-radius: 999px;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, .08);
+  color: #111 !important;
+  text-decoration: none !important;
+  font-size: 16px;
+  line-height: 1.25;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, .04);
+  transition: border-color .2s, box-shadow .2s, transform .2s, color .2s;
+}
+.sb-social__item:hover,
+.sb-social__item:focus-visible {
+  border-color: var(--sb-accent);
+  color: var(--sb-accent) !important;
+  box-shadow: 0 10px 26px rgba(26, 86, 255, .16);
+  transform: translateY(-2px);
+  outline: none;
+}
+.sb-social__icon {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #111;
+  color: #fff;
+  transition: background .2s;
+}
+.sb-social__item:hover .sb-social__icon,
+.sb-social__item:focus-visible .sb-social__icon { background: var(--sb-accent); }
+.sb-social__icon svg { width: 18px; height: 18px; fill: currentColor; display: block; }
+.sb-social__icon .fab { font-size: 19px; line-height: 1; color: inherit; }
+.sb-social__text { display: flex; flex-direction: column; }
+.sb-social__text small {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: rgba(0, 0, 0, .45);
+  margin-bottom: 2px;
+}
+.sb-footer__bottom {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 24px;
+  padding-top: 22px;
+  border-top: 1px solid rgba(0, 0, 0, .08);
+}
+.sb-footer__copy { font-size: 13px; color: rgba(0, 0, 0, .55); }
+.sb-footer__catalog {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: rgba(0, 0, 0, .65) !important;
+  text-decoration: none !important;
+  transition: color .2s;
+}
+.sb-footer__catalog svg { width: 15px; height: 15px; fill: #f5b301; }
+.sb-footer__catalog:hover { color: var(--sb-accent) !important; }
+
+@media (max-width: 767px) {
+  .sb-footer { padding: 40px 16px 24px; }
+  .sb-footer__inner { gap: 28px; }
+  .sb-social { flex-direction: column; align-items: stretch; gap: 10px; }
+  .sb-social__item { min-width: 0; width: 100%; }
+  .sb-footer__bottom { flex-direction: column; text-align: center; justify-content: center; }
+}
+
+/* «Контакты»: чёрный блок вплотную к подвалу, без серой полосы от отступов темы */
+.page-id-57 .entry-main,
+.page-id-57 .entry-content { margin-bottom: 0 !important; }
+.page-id-57 .elementor-57 > .elementor-section:last-child { margin-bottom: 0 !important; }
