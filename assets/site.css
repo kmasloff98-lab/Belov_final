@@ -1,0 +1,574 @@
+/*!
+ * belov.tv — единый файл исправлений и доработок
+ * Подключается последним на всех страницах и имеет приоритет над стилями темы.
+ */
+
+:root {
+  --sb-accent: #1a56ff;
+  --sb-accent-dark: #0f3fd1;
+  --sb-ink: #000;
+  --sb-gap: 15px;
+  --sb-header-h: 72px;
+}
+
+/* =================================================================
+ * 1. ШАПКА И МЕНЮ — АКТИВНЫЙ ПУНКТ
+ * ================================================================= */
+#site-elementor-header .aux-master-menu > li > .aux-item-content {
+  transition: color .2s ease;
+}
+#site-elementor-header .aux-master-menu > li > .aux-item-content:hover {
+  color: var(--sb-accent) !important;
+}
+#site-elementor-header .aux-master-menu > li.current-menu-item > .aux-item-content,
+#site-elementor-header .aux-master-menu > li.is-active > .aux-item-content {
+  color: var(--sb-accent) !important;
+  font-weight: 700;
+}
+
+/* =================================================================
+ * 2. ГАЛЕРЕИ — РОВНАЯ СЕТКА БЕЗ ПУСТЫХ ПРОВАЛОВ
+ * (фиксированная высота контейнера от Isotope сброшена)
+ * ================================================================= */
+.aux-gallery .aux-gallery-container {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--sb-gap);
+  height: auto !important;
+  margin: 0 !important;
+  position: relative !important;
+}
+.aux-gallery .aux-gallery-container::before,
+.aux-gallery .aux-gallery-container::after { display: none !important; }
+
+.aux-gallery .aux-gallery-container > .gallery-item {
+  position: relative !important;
+  left: auto !important;
+  top: auto !important;
+  width: auto !important;
+  max-width: none !important;
+  float: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  transform: none !important;
+  opacity: 1 !important;
+}
+.aux-gallery .aux-gallery-container > .gallery-item.aux-iso-hidden {
+  display: none !important;
+}
+.aux-gallery .gallery-item.sb-appear {
+  animation: sb-fade .35s ease both;
+}
+@keyframes sb-fade {
+  from { opacity: 0; transform: scale(.97); }
+  to   { opacity: 1; transform: none; }
+}
+.aux-gallery .aux-frame-ratio-inner img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover;
+}
+.aux-lightbox-gallery .aux-lightbox-btn { cursor: zoom-in; }
+
+/* Логотипы партнёров (галерея без лайтбокса) — показываем целиком */
+.aux-gallery:not(.aux-lightbox-gallery) .aux-gallery-container { gap: 10px; }
+.aux-gallery:not(.aux-lightbox-gallery) .aux-frame-ratio-inner img {
+  object-fit: contain;
+}
+.aux-gallery:not(.aux-lightbox-gallery) a[href="#null"] { cursor: default; pointer-events: none; }
+
+/* Аккуратные отступы фотогалереи от соседних блоков */
+.aux-widget-gallery:has(.aux-lightbox-gallery) {
+  padding: 60px 0 50px;
+}
+@media (max-width: 767px) {
+  .aux-widget-gallery:has(.aux-lightbox-gallery) { padding: 36px 0 30px; }
+}
+
+/* Отступ между галереей и переключателем страниц */
+.aux-gallery .aux-pagination {
+  margin: 30px 0 0 !important;
+  display: flex;
+  justify-content: center;
+}
+
+@media (max-width: 1024px) {
+  .aux-gallery .aux-gallery-container.aux-tb-col2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 767px) {
+  :root { --sb-gap: 10px; }
+  .aux-gallery .aux-gallery-container.aux-mb-col1 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .aux-gallery .aux-gallery-container.aux-mb-col3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 420px) {
+  .aux-gallery .aux-gallery-container.aux-mb-col1 { grid-template-columns: 1fr; }
+}
+
+/* =================================================================
+ * 3. ПЕРЕКЛЮЧАТЕЛЬ СТРАНИЦ ГАЛЕРЕИ
+ * ================================================================= */
+.aux-pagination .pagination {
+  display: flex !important;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 0 !important;
+  padding: 0 !important;
+  list-style: none !important;
+}
+.aux-pagination .pagination > li {
+  float: none !important;
+  margin: 0 !important;
+  display: block;
+}
+.aux-pagination .pagination > li > a {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 50% !important;
+  border: 1px solid rgba(0, 0, 0, .15) !important;
+  background: transparent !important;
+  color: #222 !important;
+  font-size: 14px !important;
+  line-height: 1 !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+  user-select: none;
+  transition: background .2s, color .2s, border-color .2s;
+}
+.aux-pagination .pagination > li > a:hover {
+  border-color: var(--sb-accent) !important;
+  color: var(--sb-accent) !important;
+}
+.aux-pagination .pagination > li.active > a {
+  background: var(--sb-ink) !important;
+  border-color: var(--sb-ink) !important;
+  color: #fff !important;
+}
+.aux-pagination .pagination > li.prev > a::before,
+.aux-pagination .pagination > li.next > a::before,
+.aux-pagination .pagination > li.prev > a::after,
+.aux-pagination .pagination > li.next > a::after { display: none !important; content: none !important; }
+.aux-pagination .sb-chev {
+  display: block;
+  width: 8px;
+  height: 8px;
+  border-top: 1.5px solid currentColor;
+  border-left: 1.5px solid currentColor;
+}
+.aux-pagination .sb-chev--prev { transform: rotate(-45deg); margin-left: 3px; }
+.aux-pagination .sb-chev--next { transform: rotate(135deg); margin-right: 3px; }
+.aux-pagination .pagination > li.disabled > a {
+  opacity: .3;
+  pointer-events: none;
+}
+
+/* =================================================================
+ * 4. ЛАЙТБОКС
+ * ================================================================= */
+html.sb-lb-open { overflow: hidden; }
+.sb-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, .94);
+  animation: sb-lb-in .25s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.sb-lightbox[hidden] { display: none; }
+@keyframes sb-lb-in { from { opacity: 0; } to { opacity: 1; } }
+.sb-lb-stage {
+  position: relative;
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 80px;
+  box-sizing: border-box;
+}
+.sb-lb-stage img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, .5);
+  transition: opacity .2s;
+  user-select: none;
+}
+.sb-lightbox.is-loading .sb-lb-stage img { opacity: .25; }
+.sb-lb-loader {
+  position: absolute;
+  width: 36px; height: 36px;
+  border: 3px solid rgba(255, 255, 255, .2);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: sb-spin .8s linear infinite;
+  display: none;
+}
+.sb-lightbox.is-loading .sb-lb-loader { display: block; }
+@keyframes sb-spin { to { transform: rotate(360deg); } }
+.sb-lightbox button {
+  position: absolute;
+  z-index: 2;
+  border: 0;
+  background: rgba(255, 255, 255, .08);
+  color: #fff;
+  cursor: pointer;
+  border-radius: 50%;
+  width: 52px; height: 52px;
+  font: 300 34px/1 Arial, sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .2s;
+  padding: 0;
+}
+.sb-lightbox button:hover,
+.sb-lightbox button:focus-visible { background: rgba(255, 255, 255, .22); outline: none; }
+.sb-lightbox button[hidden] { display: none; }
+.sb-lb-close { top: 16px; right: 16px; }
+.sb-lb-prev  { left: 16px;  top: 50%; transform: translateY(-50%); }
+.sb-lb-next  { right: 16px; top: 50%; transform: translateY(-50%); }
+.sb-lb-counter {
+  position: absolute;
+  top: 28px; left: 50%;
+  transform: translateX(-50%);
+  color: rgba(255, 255, 255, .7);
+  font: 14px/1 Arial, sans-serif;
+  letter-spacing: .05em;
+}
+@media (max-width: 767px) {
+  .sb-lb-stage { padding: 64px 8px; }
+  .sb-lb-prev, .sb-lb-next { top: auto; bottom: 16px; transform: none; }
+  .sb-lb-prev { left: calc(50% - 64px); }
+  .sb-lb-next { right: calc(50% - 64px); }
+}
+
+/* Остатки PhotoSwipe и поиска темы без скриптов — не нужны */
+.pswp, .aux-search-overlay, .aux-fs-popup { display: none !important; }
+
+/* =================================================================
+ * 5. КНОПКА «НАВЕРХ»
+ * ================================================================= */
+.aux-goto-top-btn {
+  position: fixed !important;
+  right: 24px !important;
+  bottom: 24px !important;
+  top: auto !important;
+  z-index: 9990 !important;
+  cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(20px) !important;
+  transition: opacity .3s, transform .3s, visibility .3s;
+}
+.aux-goto-top-btn.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: none !important;
+}
+
+/* =================================================================
+ * 6. БЛОК СВЯЗИ (страница «Контакты»)
+ * ================================================================= */
+.sb-contact {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 18px;
+  margin-top: 36px;
+  clear: both;
+}
+.sb-call-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 30px 16px 18px;
+  border-radius: 999px;
+  background: var(--sb-accent);
+  color: #fff !important;
+  text-decoration: none !important;
+  font-family: "Roboto Condensed", "Roboto", Arial, sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: .02em;
+  line-height: 1.1;
+  box-shadow: 0 10px 30px rgba(26, 86, 255, .35);
+  transition: background .2s, transform .2s, box-shadow .2s;
+}
+.sb-call-btn:hover,
+.sb-call-btn:focus-visible {
+  background: var(--sb-accent-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 14px 34px rgba(26, 86, 255, .45);
+  outline: none;
+}
+.sb-call-btn__icon {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .18);
+  animation: sb-ring 2.4s ease-in-out infinite;
+}
+.sb-call-btn__icon svg { width: 22px; height: 22px; fill: #fff; }
+.sb-call-btn__text { display: flex; flex-direction: column; gap: 4px; }
+.sb-call-btn__label {
+  font-size: 12px;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  opacity: .85;
+}
+@keyframes sb-ring {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, .35); }
+  50%      { box-shadow: 0 0 0 10px rgba(255, 255, 255, 0); }
+}
+.sb-contact-list {
+  list-style: none;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.sb-contact-list li { margin: 0 !important; padding: 0 !important; list-style: none !important; }
+.sb-contact-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  color: #fff !important;
+  text-decoration: none !important;
+  font-family: "Roboto", Arial, sans-serif;
+  font-size: 17px;
+  line-height: 1.3;
+  transition: color .2s;
+  word-break: break-all;
+}
+.sb-contact-link:hover { color: var(--sb-accent) !important; }
+.sb-contact-link__icon {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, .25);
+  transition: border-color .2s, background .2s;
+}
+.sb-contact-link:hover .sb-contact-link__icon { border-color: var(--sb-accent); background: rgba(26, 86, 255, .12); }
+.sb-contact-link__icon svg { width: 18px; height: 18px; fill: currentColor; }
+.sb-contact-link small {
+  display: block;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: rgba(255, 255, 255, .55);
+  margin-bottom: 2px;
+}
+
+/* =================================================================
+ * 7. АДАПТИВНОСТЬ: ПЛАНШЕТ (768–1024 px) — логотип и меню в одну строку
+ * ================================================================= */
+@media (min-width: 768px) and (max-width: 1024px) {
+  #site-elementor-header .elementor-element-7c37048 > .elementor-widget-wrap {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 16px 24px !important;
+    box-sizing: border-box;
+  }
+  #site-elementor-header .elementor-widget-aux_logo { flex: none; margin: 0 !important; }
+  #site-elementor-header .aux-logo-anchor img { width: 120px !important; height: auto !important; }
+  #site-elementor-header .elementor-widget-aux_menu_box { flex: 0 1 auto; margin: 0 !important; }
+  #site-elementor-header .aux-master-menu { display: flex !important; flex-wrap: nowrap; justify-content: flex-end; }
+  #site-elementor-header .aux-master-menu > li > .aux-item-content {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+    font-size: 12px !important;
+    white-space: nowrap;
+  }
+}
+
+/* =================================================================
+ * 8. АДАПТИВНОСТЬ: СМАРТФОНЫ — ШАПКА, ЛОГОТИП, МЕНЮ
+ * ================================================================= */
+html, body { max-width: 100%; overflow-x: hidden; }
+
+@media (max-width: 767px) {
+  #site-elementor-header {
+    position: absolute !important;
+    top: 0; left: 0; right: 0;
+    z-index: 9999 !important;
+    background: transparent;
+  }
+  #site-elementor-header .elementor-50 .elementor-element-97737d9 > .elementor-container,
+  #site-elementor-header .elementor-section > .elementor-container {
+    max-width: 100% !important;
+    padding: 0 !important;
+  }
+  #site-elementor-header .elementor-element-7c37048 > .elementor-widget-wrap {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    min-height: var(--sb-header-h);
+    padding: 12px 16px !important;
+    box-sizing: border-box;
+  }
+
+  /* Анимации появления темы создают «контейнер» для position:fixed — отключаем их в шапке */
+  #site-elementor-header,
+  #site-elementor-header .elementor-element,
+  #site-elementor-header .aux-appear-watch-animation {
+    animation: none !important;
+    transform: none !important;
+    filter: none !important;
+    opacity: 1 !important;
+  }
+
+  /* Логотип */
+  #site-elementor-header .elementor-widget-aux_logo {
+    width: auto !important;
+    max-width: 60% !important;
+    margin: 0 !important;
+    flex: 0 1 auto;
+    position: relative;
+    z-index: 10002;
+  }
+  #site-elementor-header .aux-widget-logo { display: flex; align-items: center; }
+  #site-elementor-header .aux-logo-anchor { display: block; line-height: 0; }
+  #site-elementor-header .aux-logo-anchor img {
+    width: 130px !important;
+    max-width: 100% !important;
+    height: auto !important;
+  }
+  #site-elementor-header .aux-logo-sticky,
+  #site-elementor-header .aux-logo-text { display: none !important; }
+
+  /* Виджет меню */
+  #site-elementor-header .elementor-widget-aux_menu_box {
+    width: auto !important;
+    margin: 0 !important;
+    flex: none;
+    position: static;
+  }
+  #site-elementor-header .aux-elementor-header-menu { position: static; }
+
+  /* Бургер */
+  #site-elementor-header .aux-burger-box {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    margin: 0 !important;
+    cursor: pointer;
+    position: relative;
+    z-index: 10002;
+    -webkit-tap-highlight-color: transparent;
+  }
+  #site-elementor-header .aux-burger {
+    position: relative !important;
+    width: 26px !important;
+    height: 18px !important;
+    margin: 0 !important;
+    top: auto !important;
+    left: auto !important;
+  }
+  #site-elementor-header .aux-burger::before,
+  #site-elementor-header .aux-burger::after,
+  #site-elementor-header .aux-burger .mid-line {
+    content: '' !important;
+    position: absolute !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 0 !important;
+    border: 0 !important;
+    border-top: 2px solid #000 !important;
+    margin: 0 !important;
+    transform-origin: 50% 50% !important;
+    transition: transform .3s ease, opacity .2s ease, top .3s ease;
+  }
+  #site-elementor-header .aux-burger::before { top: 0 !important; }
+  #site-elementor-header .aux-burger .mid-line { top: 8px !important; display: block !important; }
+  #site-elementor-header .aux-burger::after { top: 16px !important; }
+  html.sb-menu-open #site-elementor-header .aux-burger::before { top: 8px !important; transform: rotate(45deg) !important; border-color: #fff !important; }
+  html.sb-menu-open #site-elementor-header .aux-burger::after  { top: 8px !important; transform: rotate(-45deg) !important; border-color: #fff !important; }
+  html.sb-menu-open #site-elementor-header .aux-burger .mid-line { opacity: 0; }
+
+  /* Выпадающее меню на весь экран */
+  #site-elementor-header .menu-header-menu-container {
+    position: fixed !important;
+    inset: 0;
+    z-index: 10001;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    background: #0b0b0b;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity .3s ease, visibility .3s ease;
+  }
+  html.sb-menu-open { overflow: hidden; }
+  html.sb-menu-open #site-elementor-header .menu-header-menu-container {
+    opacity: 1;
+    visibility: visible;
+  }
+  html.sb-menu-open #site-elementor-header .aux-logo-anchor img { filter: invert(1); }
+
+  #site-elementor-header .aux-master-menu {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 6px;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100%;
+    float: none !important;
+  }
+  #site-elementor-header .aux-master-menu > li {
+    display: block !important;
+    float: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: auto !important;
+    text-align: center;
+  }
+  #site-elementor-header .aux-master-menu > li > .aux-item-content {
+    display: block !important;
+    padding: 10px 20px !important;
+    margin: 0 !important;
+    color: #fff !important;
+    font-size: 24px !important;
+    line-height: 1.25 !important;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+  }
+  #site-elementor-header .aux-master-menu > li.current-menu-item > .aux-item-content {
+    color: var(--sb-accent) !important;
+  }
+  #site-elementor-header .aux-master-menu > li:last-child > .aux-item-content {
+    margin-top: 18px !important;
+    font-size: 18px !important;
+    border: 1px solid rgba(255, 255, 255, .3);
+    border-radius: 999px;
+    padding: 12px 26px !important;
+  }
+
+  /* Блок связи на смартфоне */
+  .sb-contact { width: 100%; }
+  .sb-call-btn { width: 100%; box-sizing: border-box; justify-content: flex-start; font-size: 17px; }
+
+  .aux-goto-top-btn { right: 14px !important; bottom: 14px !important; }
+}
